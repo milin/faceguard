@@ -18,7 +18,7 @@ from django.conf import settings
 
 
 def facebook_login(request):
-    facebook = Pyfb(CLIENT_ID, permissions=[
+    facebook = Pyfb(settings.CLIENT_ID, permissions=[
         'publish_actions',
         'publish_pages',
         'user_photos',
