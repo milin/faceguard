@@ -1,0 +1,25 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Log in</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<style>
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+</style>
+</head>
+<body>
+Hi, {{ user.first_name }}!
+
+Please enter your blacklisted words for facebook. Make sure multiple words
+are separated by spaces
+<form action="/blacklist" method="post">
+    {% csrf_token %}
+{{ form }}
+<input type="submit" value="Submit" />
+</form>
+</body>
+</html>
