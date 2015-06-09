@@ -175,6 +175,7 @@ def blacklist_words(request):
 
     if request.method == 'GET':
         initial = BlackListedWords.objects.filter(user=fb_user)
+        initial_words = []
         if initial:
             initial_words = [i.word for i in initial]
         request_context = RequestContext(request)
