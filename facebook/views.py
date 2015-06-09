@@ -1,18 +1,19 @@
-from django.shortcuts import HttpResponseRedirect, HttpResponse
-from django.views.generic import TemplateView
-from django.core.mail import send_mail
-from pyfb import Pyfb
-from pyfb.auth import ALL_PERMISSIONS
-from django.shortcuts import render_to_response
-from django.contrib.auth import authenticate, login
-from django.template import RequestContext
-from django.contrib.auth.models import User
-# Create your views here.
-import simplejson as json
 import requests
-from facebook.models import FacebookUser, BlackListedWords
-from facebook.forms import BlackListWordsForm
+import simplejson as json
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django.shortcuts import (
+    HttpResponse,
+    HttpResponseRedirect,
+    render_to_response,
+)
+from django.template import RequestContext
+from django.views.generic import TemplateView
+from facebook.forms import BlackListWordsForm
+from facebook.models import BlackListedWords, FacebookUser
+from pyfb import Pyfb
 
 
 AUTHORIZE_URL = 'https://graph.facebook.com/oauth/authorize?'
@@ -23,10 +24,6 @@ GRANT_TYPE = 'client_credentials'
 REDIRECT_URL = 'http://dev.ahfctoolkit.com.ngrok.com/facebook_login_success'
 SENDER_EMAIL = 'milind.sakya@gmail.com'
 RECIPIENT_EMAIL = 'upechhya97@gmail.com'
-# This is a short lived token for now. Need to get long lasting token
-ACCESS_TOKEN = 'CAACEdEose0cBAB5ZAJo5A9GlVxvDUdY0Nrfz65jofmGPLZBVZAKigqxjsdT5oZCzCTGstPAY38cHvrJx8y6sHneNC6TOXgaQudB72HuZBy657QE9qstGAay6AZB1miPgZAZC6mCyUhA4xvPw6rLw5NYy6UnmkBUtYYuzB6jeFujycePoUfxsSl7tZAWipdfFMFfenZAOtp4FN3VzsAjhk9lL1L'
-#ACCESS_TOKEN = 'CAACEdEose0cBAHtUnw8bNI0RUWA6ML8JBroSKt7VPlhcp6f7pBQjxCKXalcwzngkGibHsT7aPReRMg4e0iq4sM3Fq0g9lO4AabqsBjvKvpaWn98x3MNbGTCxvfZCP7OiUlp7BRjJ202SN1vbXkMs9db3TUkVHM4LV4mQ0OuRUt6wFeAQUgh3h0hiTNUu2hB8101OoZB8chayEeTLZAp'
-
 
 def facebook_login(request):
     facebook = Pyfb(CLIENT_ID, permissions=[

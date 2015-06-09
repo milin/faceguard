@@ -1,8 +1,6 @@
 from django import forms
-from facebook.models import (
-    FacebookUser,
-    BlackListedWords
-)
+from facebook.models import BlackListedWords, FacebookUser
+
 
 class BlackListWordsForm(forms.ModelForm):
 
