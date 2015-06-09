@@ -15,7 +15,16 @@ body{
 Hi, {{ user.first_name }}!
 
 Please enter your blacklisted words for facebook. Make sure multiple words
-are separated by spaces
+are separated by spaces.
+<br>
+
+
+{% if initial_words %}
+Your previously added blacklisted words to check in facebook:
+{% for i in initial_words %}
+<li> {{i|linebreaks}} </li>
+{% endfor %}
+{% endif %}
 <form action="/blacklist" method="post">
     {% csrf_token %}
 {{ form }}

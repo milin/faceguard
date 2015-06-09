@@ -14,16 +14,8 @@ from django.views.generic import TemplateView
 from facebook.forms import BlackListWordsForm
 from facebook.models import BlackListedWords, FacebookUser
 from pyfb import Pyfb
+from django.conf import settings
 
-
-AUTHORIZE_URL = 'https://graph.facebook.com/oauth/authorize?'
-ACCESS_TOKEN_URL = 'https://graph.facebook.com/v2.3/oauth/access_token?'
-CLIENT_ID = '177316008955964'
-CLIENT_APP_SECRET = 'a98cec4142c3cd8ed35800b48696f136'
-GRANT_TYPE = 'client_credentials'
-REDIRECT_URL = 'http://dev.ahfctoolkit.com.ngrok.com/facebook_login_success'
-SENDER_EMAIL = 'milind.sakya@gmail.com'
-RECIPIENT_EMAIL = 'upechhya97@gmail.com'
 
 def facebook_login(request):
     facebook = Pyfb(CLIENT_ID, permissions=[
@@ -35,14 +27,18 @@ def facebook_login(request):
         'user_about_me',
         'email'
     ])
-    auth_code_url = facebook.get_auth_code_url(redirect_uri=REDIRECT_URL)
+    auth_code_url = facebook.get_auth_code_url(redirect_uri=settings.REDIRECT_URL)
     return HttpResponseRedirect(auth_code_url)
 
 
 def facebook_login_success(request):
     code = request.GET.get('code')
-    facebook = Pyfb(CLIENT_ID)
-    access_token = facebook.get_access_token(CLIENT_APP_SECRET, code, redirect_uri=REDIRECT_URL)
+    facebook = Pyfb(settings.CLIENT_ID)
+    access_token = facebook.get_access_token(
+        settings.CLIENT_APP_SECRET,
+        code,
+        redirect_uri=settings.REDIRECT_URL
+    )
     me = facebook.get_myself()
 
     try:
@@ -54,7 +50,8 @@ def facebook_login_success(request):
         user = User.objects.create(
             username=me.email,
             first_name=me.first_name,
-            last_name=me.last_name
+            last_name=me.last_name,
+            email=me.email
         )
         user.set_password(me.email)
         user.save()
@@ -128,24 +125,25 @@ class Facebook(TemplateView):
     def get(self, request):
 
         user = request.user
-        access_token = FacebookUser.objects.get(user=user).access_token
+        fb_user = FacebookUser.objects.get(user=user)
+        access_token = fb_user.access_token
         # Get the feed
         feeds = self.get_feed(access_token=access_token)
         self.get_comments_having_blacklisted_words(feeds, user)
         print feeds
-        #self.delete_them()
+        self.delete_them(request)
         return HttpResponse(json.dumps(self.blacklist_comments))
 
-    def delete_them(self):
+    def delete_them(self, request):
         for comment in self.blacklist_comments:
-            response = requests.delete(self.signed_url(self.delete_url.format(comment['id'])))
+            #response = requests.delete(self.signed_url(self.delete_url.format(comment['id'])))
             send_mail(
                 'Facebook blacklist comment deleted',
                 'This message was deleted:\n {}'.format(comment['message']),
-                SENDER_EMAIL,
-                [RECIPIENT_EMAIL],
+                settings.SENDER_EMAIL,
+                [request.user.email],
             )
-            print response.content
+            #print response.content
 
 def login_user(request):
     state = "Please log in below..."
@@ -173,17 +171,23 @@ def login_user(request):
 
 def blacklist_words(request):
     form = BlackListWordsForm(request.user)
+    fb_user = FacebookUser.objects.get(user=request.user)
+
     if request.method == 'GET':
+        initial = BlackListedWords.objects.filter(user=fb_user)
+        if initial:
+            initial_words = [i.word for i in initial]
         request_context = RequestContext(request)
         request_context.push({
             'form': form,
-            'user': request.user
+            'user': request.user,
+            'initial_words': initial_words
         })
         return render_to_response('blacklist_words.html', request_context)
     else:
         form = BlackListWordsForm(request.user, data=request.POST)
         if form.is_valid():
             form.save()
+            return HttpResponseRedirect(reverse('blacklist_words'))
         else:
             return HttpResponse(form.errors)
-
