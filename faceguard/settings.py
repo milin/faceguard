@@ -79,7 +79,11 @@ FACEBOOK_SCOPE = [
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-DATABASES = {}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    }
+}
 import dj_database_url
 DATABASES['default'] =  dj_database_url.config()
 
