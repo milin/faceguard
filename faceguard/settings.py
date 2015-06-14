@@ -105,6 +105,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
+import os
+PROJECT_DIR=os.path.dirname(__file__)
+STATIC_ROOT= os.path.join(PROJECT_DIR,'static_media/')
 TEMPLATE_DIRS = (
     'templates',
 )
