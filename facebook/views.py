@@ -13,7 +13,11 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.views.generic import TemplateView
 from facebook.forms import BlackListWordsForm
-from facebook.models import BlackListedWords, FacebookUser
+from facebook.models import (
+    BlackListedWords,
+    FacebookUser,
+    DeletedComments
+)
 from pyfb import Pyfb
 from django.conf import settings
 
@@ -85,9 +89,6 @@ class Facebook(TemplateView):
         return '{}?access_token={}'.format(url, access_token)
 
     def get_feed(self, access_token=None):
-        data = {
-            'access_token': access_token
-        }
         response = requests.get(self.signed_url(self.feed_url, access_token))
         self.feed = json.loads(response.content)['data']
         return self.feed
@@ -126,12 +127,25 @@ class Facebook(TemplateView):
                 self.delete_url.format(comment['id']),
                 access_token
             ))
+            self.store_comment_to_be_deleted(fb_user, comment)
             send_mail(
                 'Facebook blacklist comment deleted',
                 'This message was deleted:\n {}'.format(comment['message']),
                 settings.SENDER_EMAIL,
                 [request.user.email],
             )
+
+    def store_comment_to_be_deleted(fb_user, comment):
+        """
+        Store the comment to be deleted and it's metadata for reviewing
+        purposes.
+        """
+        DeletedComments.objects.create(
+            message = comment['message'],
+            message_by = comment['from']['name'],
+            message_id = comment['id'],
+            user=fb_user,
+        )
 
 
 @login_required

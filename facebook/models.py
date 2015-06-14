@@ -12,9 +12,9 @@ class FacebookUser(models.Model):
     user=models.ForeignKey(User)
     blacklist_words = models.TextField()
 
-
     def __str__(self):
         return self.first_name
+
 
 class BlackListedWords(models.Model):
     word = models.CharField(max_length=100)
@@ -23,3 +23,13 @@ class BlackListedWords(models.Model):
     def __str__(self):
         return self.word
 
+
+class DeletedComments(models.Model):
+    # We store deleted comments and related metadata.
+    message = models.TextField()
+    message_by = models.CharField(max_length=200)
+    user = models.ForeignKey(FacebookUser)
+    message_id = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.message[:20]
