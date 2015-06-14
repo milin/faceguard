@@ -5,8 +5,8 @@ from facebook.views import (
     Facebook,
     facebook_login_success,
     facebook_login,
-    login_user,
-    blacklist_words
+    blacklist_words,
+    homepage
 )
 admin.autodiscover()
 
@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     #url(r'^callback/', get_accesstoken),
     url(r'^facebook_login_success', facebook_login_success),
     url(r'^facebook_login', facebook_login, name='facebook_login'),
-    url(r'^login', login_user),
-    url(r'^blacklist', blacklist_words, name='blacklist_words')
+    url(r'^blacklist', blacklist_words, name='blacklist_words'),
+    url(r'^home', homepage, name='home'),
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout',{'next_page': '/accounts/login'})
 )

@@ -9,6 +9,7 @@ from django.shortcuts import (
     HttpResponseRedirect,
     render_to_response,
 )
+from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.views.generic import TemplateView
 from facebook.forms import BlackListWordsForm
@@ -18,16 +19,14 @@ from django.conf import settings
 
 
 def facebook_login(request):
-    facebook = Pyfb(settings.CLIENT_ID, permissions=[
-        'publish_actions',
-        'publish_pages',
-        'user_photos',
-        'user_posts',
-        'manage_pages',
-        'user_about_me',
-        'email'
-    ])
-    auth_code_url = facebook.get_auth_code_url(redirect_uri=settings.REDIRECT_URL)
+    # Gets the auth redirect url with code provided from facebook.
+    facebook = Pyfb(
+        settings.CLIENT_ID,
+        permissions=settings.FACEBOOK_SCOPE
+    )
+    auth_code_url = facebook.get_auth_code_url(
+        redirect_uri=settings.REDIRECT_URL
+    )
     return HttpResponseRedirect(auth_code_url)
 
 
@@ -99,8 +98,6 @@ class Facebook(TemplateView):
         return '{}?access_token={}'.format(url, access_token)
 
     def get_feed(self, access_token=None):
-        if not access_token:
-            access_token = ACCESS_TOKEN
         data = {
             'access_token': access_token
         }
@@ -123,7 +120,6 @@ class Facebook(TemplateView):
             print e
 
     def get(self, request):
-
         user = request.user
         fb_user = FacebookUser.objects.get(user=user)
         access_token = fb_user.access_token
@@ -135,40 +131,23 @@ class Facebook(TemplateView):
         return HttpResponse(json.dumps(self.blacklist_comments))
 
     def delete_them(self, request):
+        user = request.user
+        fb_user = FacebookUser.objects.get(user=user)
+        access_token = fb_user.access_token
         for comment in self.blacklist_comments:
-            #response = requests.delete(self.signed_url(self.delete_url.format(comment['id'])))
+            response = requests.delete(self.signed_url(
+                self.delete_url.format(comment['id']),
+                access_token
+            ))
             send_mail(
                 'Facebook blacklist comment deleted',
                 'This message was deleted:\n {}'.format(comment['message']),
                 settings.SENDER_EMAIL,
                 [request.user.email],
             )
-            #print response.content
-
-def login_user(request):
-    state = "Please log in below..."
-    username = password = ''
-    if request.POST:
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                state = "You're successfully logged in!"
-            else:
-                state = "Your account is not active, please contact the site admin."
-        else:
-            state = "Your username and/or password were incorrect."
-    request_context = RequestContext(request)
-    request_context.push({
-        'state': state,
-        'username': username
-    })
-    return render_to_response('auth.html', request_context)
 
 
+@login_required
 def blacklist_words(request):
     form = BlackListWordsForm(request.user)
     fb_user = FacebookUser.objects.get(user=request.user)
@@ -192,3 +171,7 @@ def blacklist_words(request):
             return HttpResponseRedirect(reverse('blacklist_words'))
         else:
             return HttpResponse(form.errors)
+
+def homepage(request):
+    return render_to_response('homepage.html')
+

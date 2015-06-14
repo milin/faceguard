@@ -26,13 +26,6 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'milind.sakya@gmail.com'
-EMAIL_HOST_PASSWORD = 'testtest'
-EMAIL_PORT = 587
-
-
 AUTHORIZE_URL = 'https://graph.facebook.com/oauth/authorize?'
 ACCESS_TOKEN_URL = 'https://graph.facebook.com/v2.3/oauth/access_token?'
 CLIENT_ID = '177316008955964'
@@ -65,6 +58,17 @@ ROOT_URLCONF = 'faceguard.urls'
 
 WSGI_APPLICATION = 'faceguard.wsgi.application'
 
+# These settings are needed to delete comments posted in user feed,
+# pages etc. TODO Make sure it works for groups as well.
+FACEBOOK_SCOPE = [
+        'publish_actions',
+        'publish_pages',
+        'user_photos',
+        'user_posts',
+        'manage_pages',
+        'user_about_me',
+        'email'
+]
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
