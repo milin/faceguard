@@ -1,2 +1,5 @@
 django
 tmuxipy
+psycopg2
+requests
+simplejson
