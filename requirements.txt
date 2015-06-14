@@ -3,3 +3,4 @@ tmuxipy
 psycopg2
 requests
 simplejson
+django-toolbelt
