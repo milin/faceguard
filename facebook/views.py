@@ -76,19 +76,6 @@ class Facebook(TemplateView):
     feed_url = 'https://graph.facebook.com/me/feed'
     delete_url = 'https://graph.facebook.com/v2.3/{}'
     feed = None
-    blacklist_words = [
-        'nambara',
-        'lol',
-        'patta',
-        'pathetic',
-        'explanation',
-        'Cherly',
-        'khemanbhai',
-        'enticing',
-        'Lovely',
-        'Yup',
-        'capturing'
-    ]
 
     def __init__(self):
         self.blacklist_comments = []
