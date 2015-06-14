@@ -135,7 +135,7 @@ class Facebook(TemplateView):
                 [request.user.email],
             )
 
-    def store_comment_to_be_deleted(fb_user, comment):
+    def store_comment_to_be_deleted(self, fb_user, comment):
         """
         Store the comment to be deleted and it's metadata for reviewing
         purposes.
