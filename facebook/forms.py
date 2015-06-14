@@ -18,3 +18,4 @@ class BlackListWordsForm(forms.ModelForm):
         blacklist_words = data['blacklist_words'].split(' ')
         for word in blacklist_words:
             BlackListedWords.objects.create(word=word, user=fb_user)
+        fb_user.save()

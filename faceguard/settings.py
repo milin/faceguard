@@ -52,8 +52,14 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
 
+)
+import os
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'sendgrid_username'
+EMAIL_HOST_PASSWORD = 'sendgrid_password'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 ROOT_URLCONF = 'faceguard.urls'
 
 WSGI_APPLICATION = 'faceguard.wsgi.application'
@@ -73,9 +79,9 @@ FACEBOOK_SCOPE = [
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-
+DATABASES = {}
 import dj_database_url
-#DATABASES['default'] =  dj_database_url.config()
+DATABASES['default'] =  dj_database_url.config()
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
