@@ -57,7 +57,7 @@ MIDDLEWARE_CLASSES = (
 import os
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'app37812569@heroku.com'
-EMAIL_HOST_PASSWORD = 'sendgrid_password'
+EMAIL_HOST_PASSWORD = 'nm0qxh8b8965'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 ROOT_URLCONF = 'faceguard.urls'
