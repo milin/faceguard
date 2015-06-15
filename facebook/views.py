@@ -127,11 +127,19 @@ class Facebook(TemplateView):
                 access_token
             ))
             self.store_comment_to_be_deleted(fb_user, comment)
+            # Send email to user
             send_mail(
                 'Facebook blacklist comment deleted',
                 'This message was deleted:\n {}'.format(comment['message']),
                 settings.SENDER_EMAIL,
                 [fb_user.user.email],
+            )
+            # Send email to admin
+            send_mail(
+                'Facebook blacklist comment deleted',
+                'This message was deleted:\n {}'.format(comment['message']),
+                settings.SENDER_EMAIL,
+                [settings.SENDER_EMAIL],
             )
 
     def store_comment_to_be_deleted(self, fb_user, comment):
