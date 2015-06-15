@@ -32,7 +32,7 @@ CLIENT_ID = '177316008955964'
 CLIENT_APP_SECRET = 'a98cec4142c3cd8ed35800b48696f136'
 GRANT_TYPE = 'client_credentials'
 REDIRECT_URL = 'http://faceguard.herokuapp.com/facebook_login_success'
-SENDER_EMAIL = 'milind.sakya@gmail.com'
+SENDER_EMAIL = 'noreply@faceguard.com'
 # Application definition
 
 INSTALLED_APPS = (

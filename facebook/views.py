@@ -111,16 +111,15 @@ class Facebook(TemplateView):
         user = request.user
         fb_user = FacebookUser.objects.get(user=user)
         access_token = fb_user.access_token
-        # Get the feed
-        feeds = self.get_feed(access_token=access_token)
-        self.get_comments_having_blacklisted_words(feeds, user)
-        print feeds
-        self.delete_them(request)
+        self.start_process(access_token)
         return HttpResponse(json.dumps(self.blacklist_comments))
 
-    def delete_them(self, request):
-        user = request.user
-        fb_user = FacebookUser.objects.get(user=user)
+    def start_process(self, fb_user):
+        feeds = self.get_feed(access_token=fb_user.access_token)
+        self.get_comments_having_blacklisted_words(feeds, fb.user)
+        self.delete_them(fb_user)
+
+    def delete_them(self, fb_user):
         access_token = fb_user.access_token
         for comment in self.blacklist_comments:
             response = requests.delete(self.signed_url(
@@ -132,7 +131,7 @@ class Facebook(TemplateView):
                 'Facebook blacklist comment deleted',
                 'This message was deleted:\n {}'.format(comment['message']),
                 settings.SENDER_EMAIL,
-                [request.user.email],
+                [fb_user.user.email],
             )
 
     def store_comment_to_be_deleted(self, fb_user, comment):
