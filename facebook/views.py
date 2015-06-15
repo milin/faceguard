@@ -116,7 +116,7 @@ class Facebook(TemplateView):
 
     def start_process(self, fb_user):
         feeds = self.get_feed(access_token=fb_user.access_token)
-        self.get_comments_having_blacklisted_words(feeds, fb.user)
+        self.get_comments_having_blacklisted_words(feeds, fb_user.user)
         self.delete_them(fb_user)
 
     def delete_them(self, fb_user):
@@ -174,4 +174,3 @@ def blacklist_words(request):
 
 def homepage(request):
     return render_to_response('homepage.html')
-
