@@ -64,7 +64,7 @@ def facebook_login_success(request):
             access_token = access_token,
             email_address = me.email,
             username=me.email,
-            user=user
+            user=user,
         )
 
     user = authenticate(
