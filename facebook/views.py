@@ -150,7 +150,11 @@ class Facebook(TemplateView):
 @login_required
 def blacklist_words(request):
     form = BlackListWordsForm(request.user)
-    fb_user = FacebookUser.objects.get(user=request.user)
+    try:
+        fb_user = FacebookUser.objects.get(user=request.user)
+    except FacebookUser.DoesNotExist:
+        # TODO Proper 404
+        HttpResponse("Not Found")
 
     if request.method == 'GET':
         initial = BlackListedWords.objects.filter(user=fb_user)
@@ -171,6 +175,7 @@ def blacklist_words(request):
             return HttpResponseRedirect(reverse('blacklist_words'))
         else:
             return HttpResponse(form.errors)
+
 
 def homepage(request):
     return render_to_response('homepage.html')
