@@ -5,8 +5,6 @@ from facebook.models import (
     DeletedComments
 )
 
-
-
 class BlackListedWordsInline(admin.TabularInline):
         model = BlackListedWords
 

@@ -125,21 +125,24 @@ class Facebook(TemplateView):
                 self.delete_url.format(comment['id']),
                 access_token
             ))
-            self.store_comment_to_be_deleted(fb_user, comment)
-            # Send email to user
-            send_mail(
-                'Facebook blacklist comment deleted',
-                'This message was deleted:\n {}'.format(comment['message']),
-                settings.SENDER_EMAIL,
-                [fb_user.user.email],
-            )
-            # Send email to admin
-            send_mail(
-                'Facebook blacklist comment deleted',
-                'This message was deleted:\n {}'.format(comment['message']),
-                settings.SENDER_EMAIL,
-                [settings.SENDER_EMAIL],
-            )
+            if response.status_code > 200:
+                self.store_comment_to_be_deleted(fb_user, comment)
+                # Send email to user
+                send_mail(
+                    'Facebook blacklist comment deleted',
+                    'This message was deleted:\n {}'.format(comment['message']),
+                    settings.SENDER_EMAIL,
+                    [fb_user.user.email],
+                )
+                # Send email to admin
+                send_mail(
+                    'Facebook blacklist comment deleted',
+                    'This message was deleted:\n {}'.format(comment['message']),
+                    settings.SENDER_EMAIL,
+                    [settings.SENDER_EMAIL],
+                )
+            else:
+                return HttpResponse(response.content)
 
     def store_comment_to_be_deleted(self, fb_user, comment):
         """
