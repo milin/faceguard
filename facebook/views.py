@@ -110,8 +110,7 @@ class Facebook(TemplateView):
     def get(self, request):
         user = request.user
         fb_user = FacebookUser.objects.get(user=user)
-        access_token = fb_user.access_token
-        self.start_process(access_token)
+        self.start_process(fb_user)
         return HttpResponse(json.dumps(self.blacklist_comments))
 
     def start_process(self, fb_user):
