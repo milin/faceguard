@@ -59,10 +59,10 @@ def facebook_login_success(request):
         user.set_password(me.email)
         user.save()
         fb_user = FacebookUser.objects.create(
-            first_name = me.first_name,
-            last_name = me.last_name,
-            access_token = access_token,
-            email_address = me.email,
+            first_name=me.first_name,
+            last_name=me.last_name,
+            access_token=access_token,
+            email_address=me.email,
             username=me.email,
             user=user,
         )
@@ -150,9 +150,9 @@ class Facebook(TemplateView):
         purposes.
         """
         DeletedComments.objects.create(
-            message = comment['message'],
-            message_by = comment['from']['name'],
-            message_id = comment['id'],
+            message=comment['message'],
+            message_by=comment['from']['name'],
+            message_id=comment['id'],
             user=fb_user,
         )
 

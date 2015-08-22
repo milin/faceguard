@@ -1,7 +1,7 @@
 django
+requests
 tmuxipy
 psycopg2
-requests
 simplejson
 django-toolbelt
-git+https://github.com/milin/pyfb.git
+git+git://github.com/milin/pyfb.git
