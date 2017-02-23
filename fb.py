@@ -4,8 +4,8 @@ from urlparse import parse_qs
 
 url = ('/', 'index')
 
-app_id = "1595310284087487"
-app_secret = "2c6b5d68d350afe22c5b19f68ba80300"
+app_id = ""
+app_secret = ""
 post_login_url = "http://0.0.0.0:8080/"
 
 user_data = web.input(code=None)
