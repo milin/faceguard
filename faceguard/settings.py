@@ -28,8 +28,8 @@ ALLOWED_HOSTS = []
 
 AUTHORIZE_URL = 'https://graph.facebook.com/oauth/authorize?'
 ACCESS_TOKEN_URL = 'https://graph.facebook.com/v2.3/oauth/access_token?'
-CLIENT_ID = '177316008955964'
-CLIENT_APP_SECRET = 'a98cec4142c3cd8ed35800b48696f136'
+CLIENT_ID = ''
+CLIENT_APP_SECRET = ''
 GRANT_TYPE = 'client_credentials'
 REDIRECT_URL = 'http://faceguard.herokuapp.com/facebook_login_success'
 SENDER_EMAIL = 'noreply@faceguard.com'
